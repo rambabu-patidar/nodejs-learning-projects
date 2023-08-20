@@ -1,0 +1,6 @@
+What is NodeJS?
+A javascript Runtime, helps in running javascript in server or in browser or in our machine.
+
+node uses V8 to run which is a Engine built by google.
+V8 takes js code and compile to machine code which then run on our computer.
+v8 written in c++.
