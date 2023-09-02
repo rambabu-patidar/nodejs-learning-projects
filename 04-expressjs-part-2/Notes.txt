@@ -1,0 +1,11 @@
+Concept that are covered in this particular project.
+
+
+1. parsing the incoming request via body-parser package.
+2. limiting the Middleware execution to HTML requests instead of using app.use();
+3. Using express router to separate the MWs 
+4. Adding a 404 error page.
+5. filtering paths by adding some portion of path in main MWs and other in app.js file.
+6. creating HTML pages.
+7. serving HTML pages using path module provided by nodejs
+8. using helper function for navigation

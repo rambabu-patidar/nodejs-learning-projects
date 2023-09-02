@@ -55,4 +55,4 @@ const requestHandler = (req, res) => {
 
 // also
 exports.handler = requestHandler;
-exports.text = "Some Hardcoded text";
+exports.text = "Some Hardcoded text!";
