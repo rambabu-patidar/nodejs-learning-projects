@@ -1,0 +1,16 @@
+.main {
+  width: 50%;
+  margin: auto;
+}
+
+.user-list {
+  width: 100%;
+  padding: 1rem;
+}
+
+.user-list-item {
+  padding: 1rem 0.5rem;
+  background-color: #80808052;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
