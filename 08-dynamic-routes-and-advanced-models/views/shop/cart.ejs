@@ -1,0 +1,42 @@
+<%- include('../includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/product.css">
+    </head>
+
+    <body>
+        <%- include('../includes/navigation.ejs') %>
+            <main>
+                <% if (products.length> 0) {%>
+                    <div class="grid">
+                        <% for (let productObj of products) { %>
+                            <article class="card product-item">
+                                <header class="card__header">
+                                    <h1 class="product__title">
+                                        <%= productObj.product.title %>
+                                    </h1>
+                                </header>
+                                <div class="card__image">
+                                    <img src="<%= productObj.product.imageUrl %>" alt="<%= productObj.product.title%>">
+                                </div>
+                                <div class="card__content">
+                                    <h2 class="product__price">
+                                        $<%= productObj.product.price%> X <%= productObj.qty %>
+                                    </h2>
+
+                                    <p class="product__description">
+                                        <%= productObj.product.description %>
+                                    </p>
+                                </div>
+                                <div class="card__actions">
+                                    <form action="/cart-delete-item" method="POST">
+                                        <input type="hidden" name="productId" value="<%= productObj.product.id %>">
+                                        <button class="btn" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </article>
+                            <% } %>
+                    </div>
+                    <% } else {%>
+                        <h1>No product to show try adding some!</h1>
+                        <% }%>
+            </main>
+            <%- include('../includes/end.ejs') %>
