@@ -4,7 +4,7 @@ const path = require("path");
 const Cart = require("./cart");
 
 const p = path.join(
-	path.dirname(process.mainModule.filename),
+	path.dirname(/*process.mainModule.filename*/ require.main.filename),
 	"data",
 	"products.json"
 );

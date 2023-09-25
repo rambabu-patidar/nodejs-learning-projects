@@ -13,7 +13,10 @@ const app = express();
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+// for parsing the form content which we from request of form submission.
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// serving static files
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/admin", adminRoutes);

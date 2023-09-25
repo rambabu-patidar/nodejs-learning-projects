@@ -1,9 +1,16 @@
 [
 	{
 		"id": "0.8905792317839809",
-		"title": "Xiaomi Pad 6",
+		"title": "Xiaomi Pad 6 pro",
 		"imageUrl": "https://i02.appmifile.com/290_operator_sg/13/06/2023/a0038436447879533f5c69f8d84c4980.jpg?f=webp",
-		"description": "A very good Tablet in price range of 300 dollar",
+		"description": "A very good Tablet in price range of $300.\r\nI liked it.",
 		"price": "300"
+	},
+	{
+		"id": "0.22558507427034247",
+		"title": "A Book",
+		"imageUrl": "https://i01.appmifile.com/webfile/globalimg/products/pc/xiaomi-pad-5/section01.jpg",
+		"description": "This is a book the image looks like pad, hahaha, isn't it?",
+		"price": "150"
 	}
 ]
