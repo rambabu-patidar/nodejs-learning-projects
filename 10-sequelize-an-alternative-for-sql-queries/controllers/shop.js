@@ -60,6 +60,7 @@ exports.getIndex = (req, res, next) => {
 		});
 };
 
+// this uses magic methods
 exports.getCart = (req, res, next) => {
 	req.user
 		.getCart()
@@ -78,6 +79,7 @@ exports.getCart = (req, res, next) => {
 		});
 };
 
+// this also uses magic methods
 exports.postCart = (req, res, next) => {
 	const prodId = req.body.productId;
 
@@ -117,6 +119,8 @@ exports.postCart = (req, res, next) => {
 		});
 };
 
+// This also uses magic methods
+// In brief whenever we do some associations we get magic methods.
 exports.postCartDeleteProduct = (req, res, next) => {
 	const prodId = req.body.productId;
 	Product.findById(prodId, (product) => {

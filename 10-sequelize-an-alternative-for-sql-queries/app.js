@@ -1,3 +1,6 @@
+// SEQUELIZE IS VERY CONFUSING AT FIRST FOR ME DUE TO THE MAGIC METHOD AND ASSOCIATIONS
+// SO RAMBABU COME AGAIN ON THIS TOPIC.
+
 const path = require("path");
 
 const express = require("express");
@@ -50,6 +53,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
+// associations between the models
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 User.hasOne(Cart);
