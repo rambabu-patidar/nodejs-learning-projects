@@ -15,14 +15,13 @@ exports.postAddProduct = (req, res, next) => {
 	const imageUrl = req.body.imageUrl;
 	const price = req.body.price;
 	const description = req.body.description;
-	const product = new Product(
-		title,
-		price,
-		imageUrl,
-		description,
-		null,
-		req.user._id
-	);
+	const product = new Product({
+		title: title,
+		price: price,
+		imageUrl: imageUrl,
+		description: description,
+		userId: req.user._id,
+	});
 	product
 		.save()
 		.then((result) => {
@@ -63,25 +62,34 @@ exports.postEditProduct = (req, res, next) => {
 	const updatedPrice = req.body.price;
 	const updatedImageUrl = req.body.imageUrl;
 	const updatedDesc = req.body.description;
-	const updatedProduct = new Product(
-		updatedTitle,
-		updatedPrice,
-		updatedImageUrl,
-		updatedDesc,
-		prodId
-	);
-	/* 
-	in the updatedProduct object above when updateding we are passing prodId so make sure that 
-	you pass id in the using new ObjectId(prodId) form because if you will not do this and assign  updatedProduct 
-	in updateOne()'s $set object then it will try to reassign the id which is not good and will throw error.
-	
-	and if you don't want to do this convertion then extract each field except prodId to provide in $set object.
-	
-	OR you could just use the ObjectId() function in your model definition so whenever we create a object the Id field remain always valid.
-	*/
 
-	updatedProduct
-		.save()
+	// ONE WAY TO UPDATE PRODUCT
+	// const updatedProduct = {
+	// 	title: updatedTitle,
+	// 	price: updatedPrice,
+	// 	imageUrl: updatedImageUrl,
+	// 	description: updatedDesc,
+	// };
+	// Product.updateOne({ _id: prodId }, { ...updatedProduct })
+	// .then(() => {
+	// 	console.log("UPDATED PRODUCT!");
+	// 	res.redirect("/admin/products");
+	// })
+	// .catch((err) => {
+	// 	console.log(err);
+	// });
+
+	// ANOTHER ONE
+	Product.findById(prodId)
+		.then((product) => {
+			// product is now a mongoose object which contain all the methods associated with it.
+			product.title = updatedTitle;
+			product.price = updatedPrice;
+			product.imageUrl = updatedImageUrl;
+			product.description = updatedDesc;
+
+			return product.save(); // this will update the product if it already exists
+		})
 		.then(() => {
 			console.log("UPDATED PRODUCT!");
 			res.redirect("/admin/products");
@@ -92,8 +100,11 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-	Product.fetchAll()
+	Product.find()
+		.select("title price -_id")
+		.populate("userId", "name")
 		.then((products) => {
+			console.log(products);
 			res.render("admin/products", {
 				prods: products,
 				pageTitle: "Admin Products",
@@ -105,10 +116,22 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
 	const prodId = req.body.productId;
-	Product.deleteById(prodId)
+	// Product.findById(prodId)
+	// 	.then((product) => {
+	// 		return product.deleteOne();
+	// 	})
+	// 	.then(() => {
+	// console.log("DESTROYED PRODUCT");
+	// res.redirect("/admin/products");
+	// 	})
+	// 	.catch((err) => console.log(err));
+
+	Product.findByIdAndDelete(prodId)
 		.then(() => {
 			console.log("DESTROYED PRODUCT");
 			res.redirect("/admin/products");
 		})
-		.catch((err) => console.log(err));
+		.catch((err) => {
+			console.log(err);
+		});
 };
