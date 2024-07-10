@@ -1,5 +1,23 @@
-const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer");
+
+// this twillio sendGrid only supports the businesses and doesn't allow to create a account.
+// const sendgridTransport = require("nodemailer-sendgrid-transport");
+
+const User = require("../models/user");
+
+// The pass field below is not my password for this email
+// rather you should create a "app password" in google and use here.
+// https://support.google.com/accounts/answer/185833
+
+const APP_PASSWORD = "Your App password";
+const transporter = nodemailer.createTransport({
+	service: "gmail",
+	auth: {
+		user: "senderMail@gmail.com",
+		pass: APP_PASSWORD,
+	},
+});
 
 exports.getLogin = (req, res, next) => {
 	let message = req.flash("error");
@@ -90,7 +108,18 @@ exports.postSignup = (req, res, next) => {
 					return user.save();
 				})
 				.then(() => {
+					// Here we send the mail.
+					const mailOptions = {
+						from: "senderMail@gmail.com",
+						to: "receiverMail@gmail.com",
+						subject: "Signup Successed!",
+						html: "<h1>You successfully signed up!</h1>",
+					};
 					res.redirect("/login");
+					return transporter.sendMail(mailOptions);
+				})
+				.catch((err) => {
+					console.log(err);
 				});
 		})
 		.catch((err) => {

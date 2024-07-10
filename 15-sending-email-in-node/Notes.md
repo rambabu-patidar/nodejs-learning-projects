@@ -1,0 +1,9 @@
+### Summary
+
+Sending emails with Node.js and Express.js involves understanding that these frameworks are not designed to create mail servers. Handling emails requires a different technology and process compared to handling HTTP requests and responses. Creating a mail server is complex and typically not done by individual developers because it involves managing high volumes of emails, security, and other challenges. Instead, third-party mail servers are used. This module will demonstrate how to interact with such third-party services to send emails, similar to how major web applications use providers like AWS for email services.
+
+In this course, SendGrid will be used for sending emails because it offers a free tier for sending up to 100 emails per day. Alternatives like MailChimp, AWS SES, and others are available, and tutorials for integrating them with Node.js can be found online. To start using SendGrid, sign up for a free account on sendgrid.com. In your Node.js project, install the necessary packages using npm: `nodemailer` and `nodemailer-sendgrid-transport`. Nodemailer simplifies sending emails from Node.js, and the SendGrid transport package helps integrate SendGrid with Nodemailer. Once these packages are installed, you can begin using Nodemailer to send emails.
+
+code implementation can be seen `auth.js` controller file
+
+In this module, you learned how to send emails using Nodemailer and the SendGrid third-party service. It's important to avoid blocking the redirect while sending emails, as waiting for email delivery can slow down your application, especially if there are many requests. For large-scale applications, consider running server-side scripts at regular intervals to handle email sending for newly signed-up users. This approach can prevent delays in user interactions and improve performance. With this knowledge, you can now enhance your authentication features in the next module.
