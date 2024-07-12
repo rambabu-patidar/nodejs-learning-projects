@@ -14,7 +14,7 @@ const User = require("../models/user");
 
 // here my email(from) is considerd as the shopping website email.
 
-const YOUR_GMAIL = "YOUR_GMAIL";
+const YOUR_GMAIL = "youremail@gmail.com";
 
 const APP_PASSWORD = "YOUR_APP_PASSWORD";
 const transporter = nodemailer.createTransport({
@@ -135,7 +135,9 @@ exports.postLogin = (req, res, next) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
 		});
 };
 
@@ -185,7 +187,9 @@ exports.postSignup = (req, res, next) => {
 			return transporter.sendMail(mailOptions);
 		})
 		.catch((err) => {
-			console.log(err);
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
 		});
 };
 
@@ -254,11 +258,15 @@ exports.postReset = (req, res, next) => {
 						return transporter.sendMail(mailOptions);
 					})
 					.catch((err) => {
-						console.log(err);
+						const error = new Error(err);
+						error.httpStatusCode = 500;
+						return next(error);
 					});
 			})
 			.catch((err) => {
-				console.log(err);
+				const error = new Error(err);
+				error.httpStatusCode = 500;
+				return next(error);
 			});
 	});
 };
@@ -290,7 +298,9 @@ exports.getNewPassword = (req, res, next) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
 		});
 };
 
@@ -336,10 +346,14 @@ exports.postNewPassword = (req, res, next) => {
 					res.redirect("/login");
 				})
 				.catch((err) => {
-					console.log(err);
+					const error = new Error(err);
+					error.httpStatusCode = 500;
+					return next(error);
 				});
 		})
 		.catch((err) => {
-			console.log(err);
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
 		});
 };

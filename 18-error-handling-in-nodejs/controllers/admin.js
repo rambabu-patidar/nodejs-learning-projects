@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
 
 const Product = require("../models/product");
 
@@ -51,6 +52,7 @@ exports.postAddProduct = (req, res, next) => {
 	}
 
 	const product = new Product({
+		// _id: new mongoose.Types.ObjectId("668ebf1d259104f7fb6ac3a0"),
 		title: title,
 		price: price,
 		description: description,
@@ -65,7 +67,17 @@ exports.postAddProduct = (req, res, next) => {
 			res.redirect("/admin/products");
 		})
 		.catch((err) => {
-			console.log(err);
+			// redirecting like this everywhere is not good as we have to write this every time
+			// res.redirect("/500");
+
+			// Express provides us a way that if we call next function passing a error into it
+			// then it doesn't execute all the middleware below it and will try to find the
+			// special type of middleware with four parameter in its handler(in which first one will be the error parameter) which we can define at a single
+			// place.
+
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error); // execution will go the special middleware.
 		});
 };
 
@@ -90,7 +102,11 @@ exports.getEditProduct = (req, res, next) => {
 				validationErrors: [],
 			});
 		})
-		.catch((err) => console.log(err));
+		.catch((err) => {
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
+		});
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -136,7 +152,11 @@ exports.postEditProduct = (req, res, next) => {
 				res.redirect("/admin/products");
 			});
 		})
-		.catch((err) => console.log(err));
+		.catch((err) => {
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
+		});
 };
 
 exports.getProducts = (req, res, next) => {
@@ -151,7 +171,11 @@ exports.getProducts = (req, res, next) => {
 				path: "/admin/products",
 			});
 		})
-		.catch((err) => console.log(err));
+		.catch((err) => {
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
+		});
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -169,7 +193,9 @@ exports.postDeleteProduct = (req, res, next) => {
 			});
 		})
 		.catch((err) => {
-			console.log(err);
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
 		});
 	// Product.deleteOne({ _id: prodId, userId: req.user._id })
 	// 	.then(() => {
