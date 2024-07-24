@@ -14,9 +14,9 @@ const User = require("../models/user");
 
 // here my email(from) is considerd as the shopping website email.
 
-const YOUR_GMAIL = "youremail@gmail.com";
+const YOUR_GMAIL = "yourMail@gmail.com";
 
-const APP_PASSWORD = "YOUR_APP_PASSWORD";
+const APP_PASSWORD = "YOUR APP PASSWORD";
 const transporter = nodemailer.createTransport({
 	service: "gmail",
 	auth: {

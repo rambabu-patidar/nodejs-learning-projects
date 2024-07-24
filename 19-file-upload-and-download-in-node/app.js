@@ -1,4 +1,5 @@
 const path = require("path");
+const crypto = require("crypto");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -7,6 +8,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -22,6 +24,41 @@ const store = new MongoDBStore({
 
 const csrfProtection = csrf();
 
+// configuration for multer to store file in disk
+// by default it stores in memory as buffer.
+const fileStorage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, "images");
+	},
+	filename: (req, file, cb) => {
+		crypto.randomBytes(16, (err, buffer) => {
+			if (err) {
+				console.log(err);
+				throw new Error("cann't create a token with crypto");
+			}
+
+			const token = buffer.toString("hex");
+			cb(null, token + "-" + file.originalname);
+		});
+	},
+});
+
+// filters for the files uploaded by user
+const fileFilter = (req, file, cb) => {
+	// pass true to second argument of cb to accept the file
+	// pass false to second argument of cb to not accept it
+
+	if (
+		file.mimetype === "image/jpg" ||
+		file.mimetype === "image/jpeg" ||
+		file.mimetype === "image/png"
+	) {
+		cb(null, true);
+	} else {
+		cb(null, false);
+	}
+};
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -30,7 +67,17 @@ const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+// the name "image" is the name field I setted in form so be sure
+app.use(
+	multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
+
 app.use(express.static(path.join(__dirname, "public")));
+// we can serve the file statically
+// we added /images route because static serving by express assumes that we are already standing in images folder
+// but our url consisted /images as prefix.
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use(
 	session({
 		secret: "my secret",
@@ -75,39 +122,18 @@ app.use(authRoutes);
 
 app.get("/500", errorController.get500);
 
-// NOTE: this page render doesn't mean technical error because there is no any
-// 	error object gets thrown for this
-// this just reached when all other routes exhausted hence we didn't found the fitting route
-// hence a 404 page not found error.
 app.use(errorController.get404);
-
-// in case of this we have a technical error thrown somewhere above and called next(err) on it
-// that's why it will be reached and executed.
-
-// also be careful to go into infinite loop as you get an error and then you redirect and then again get error
-
-// if you throw error in synchronous code then express will make it to the 4 parameter handler MW
-// but if you throw error in asynchronous code then express will not make it to that MW and our application will break
-// that means you must call next(error) in async code to make it to error handling MW.
-// btw we can call next(error) in synchronous code also and it will work fine.
 
 app.use((error, req, res, next) => {
 	// res.status(error.httpStatusCode).render(...)
-	console.log(error.customMsg);
 	// res.redirect("/500");
-
+	// console.log(error);
 	res.status(500).render("500", {
 		pageTitle: "Error!",
 		path: "/500",
+		isAuthenticated: req.session.isLoggedIn,
 	});
 });
-
-// if you have more then one 4 parameter handler MW then they are called one by one from
-// top to bottom as usual normal MW does.
-
-// setting up and sending status codes with responses doen't mean that our application will crashes or perform
-// something new, they just are the indicator that for the request you send this is what happend
-// and makes client aware of that operation.
 
 mongoose
 	.connect(MONGODB_URI)

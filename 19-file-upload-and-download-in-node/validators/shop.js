@@ -5,12 +5,6 @@ exports.postAddOrEditProduct = [
 		.trim()
 		.isLength({ min: 1 })
 		.withMessage("Invalid title field!"),
-	body("imageUrl")
-		.trim()
-		.isLength({ min: 1 })
-		.withMessage("Please provide a image URL!")
-		.isURL()
-		.withMessage("Invalid URL"),
 	check("price")
 		.custom((value, { req }) => {
 			if (+value <= 0) {
